@@ -1,0 +1,32 @@
+#Definimos la variable
+def mostrar_figura():
+    while True:
+        print("Seleccione una figura:")
+        print("1 - Cuadrado")
+        print("2 - Rectángulo")
+       
+        opcion = input("Ingrese su opción (1 o 2): ")
+        #Si elige la opción 1 se ejecuta lo siguiente
+        if opcion == '1':
+            lado = int(input("Ingrese el lado del cuadrado: "))
+            print("\nCuadrado:")
+            for i in range(lado):
+                print("* " * lado)
+            print(f"Área: {lado ** 2}")
+            print(f"Perímetro: {4 * lado}")
+            break
+        #Si elige la opción 2 se ejecuta lo siguiente
+        elif opcion == '2':
+            base = int(input("Ingrese la base del rectángulo: "))
+            altura = int(input("Ingrese la altura del rectángulo: "))
+            print("\nRectángulo:")
+            for i in range(altura):
+                print("* " * base)
+            print(f"Área: {base * altura}")
+            print(f"Perímetro: {2 * (base + altura)}")
+            break
+        else:
+            print("Opción no válida. Intente de nuevo.")
+
+
+mostrar_figura()
