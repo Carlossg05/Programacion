@@ -1,0 +1,68 @@
+def cuenta_bancaria():
+    # Solicitar saldo inicial
+    saldo = -1
+    while saldo < 0:
+        saldo_input = input("Ingrese el saldo inicial de la cuenta (debe ser mayor o igual a 0): ")
+        if saldo_input.replace('.', '', 1).isdigit() and float(saldo_input) >= 0:
+            saldo = float(saldo_input)
+        else:
+            print("El saldo no puede ser negativo o no válido. Intente de nuevo.")
+
+
+    while True:
+        # Mostrar menú
+        print("\nSeleccione una opción:")
+        print("1 - Ingresar dinero")
+        print("2 - Retirar dinero")
+        print("3 - Mostrar saldo")
+        print("4 - Salir")
+
+
+        # Validar opción del menú
+        opcion = 0
+        while opcion not in [1, 2, 3, 4]:
+            opcion_input = input("Ingrese su opción (1, 2, 3 o 4): ")
+            if opcion_input.isdigit():
+                opcion = int(opcion_input)
+            if opcion not in [1, 2, 3, 4]:
+                print("Opción no válida. Intente de nuevo.")
+
+
+        # Procesar la opción seleccionada
+        if opcion == 1:  # Ingresar dinero
+            cantidad = -1
+            while cantidad < 0:
+                cantidad_input = input("Ingrese la cantidad a depositar: ")
+                if cantidad_input.replace('.', '', 1).isdigit() and float(cantidad_input) >= 0:
+                    cantidad = float(cantidad_input)
+                else:
+                    print("No se puede ingresar una cantidad negativa o no válida. Intente de nuevo.")
+            saldo += cantidad
+            print(f"Se han ingresado {cantidad}. Nuevo saldo: {saldo}")
+
+
+        elif opcion == 2:  # Retirar dinero
+            cantidad = -1
+            while cantidad < 0:
+                cantidad_input = input("Ingrese la cantidad a retirar: ")
+                if cantidad_input.replace('.', '', 1).isdigit() and float(cantidad_input) >= 0:
+                    cantidad = float(cantidad_input)
+                else:
+                    print("No se puede retirar una cantidad negativa o no válida. Intente de nuevo.")
+            if cantidad > saldo:
+                print("No se puede retirar más de lo que hay en la cuenta. Intente de nuevo.")
+            else:
+                saldo -= cantidad
+                print(f"Se han retirado {cantidad}. Nuevo saldo: {saldo}")
+
+
+        elif opcion == 3:  # Mostrar saldo
+            print(f"El saldo actual de la cuenta es: {saldo}")
+
+
+        elif opcion == 4:  # Salir
+            print("Gracias por usar el sistema de cuenta bancaria. ¡Hasta luego!")
+            break
+
+
+cuenta_bancaria()
