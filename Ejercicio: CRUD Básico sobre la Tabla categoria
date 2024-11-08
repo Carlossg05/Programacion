@@ -1,0 +1,76 @@
+import mysql.connector
+
+def conectar_db():
+    return mysql.connector.connect(
+        host="localhost",
+        user="host",
+        password="CURSO",
+        database="SUPERMERCADO"
+    )
+
+def crear_categoria(conexion):
+    id_categoria = input("ID de la nueva categoría: ")
+    nombre_categoria = input("Nombre de la nueva categoría: ")
+    cursor = conexion.cursor()
+
+    cursor.execute("INSERT INTO categoria (idcategoria, nombre) VALUES (%s, %s)", (id_categoria, nombre_categoria))
+    conexion.commit()
+    print(f"Categoría '{nombre_categoria}' creada con éxito.")
+    cursor.close()
+
+def leer_categorias(conexion):
+
+    cursor = conexion.cursor()
+
+    cursor.execute("SELECT idcategoria, nombre FROM categoria")
+
+    for id_categoria, nombre in cursor.fetchall():
+        print(f"{id_categoria} - {nombre}")
+    cursor.close()
+
+def actualizar_categoria(conexion):
+    id_categoria = input("ID de la categoría al actualizar: ")
+    nuevo_nombre = input("Nuevo nombre: ")
+    cursor = conexion.cursor()
+    cursor.execute("UPDATE categoria SET nombre = %s WHERE idcategoria = %s", (nuevo_nombre, id_categoria))
+    conexion.commit()
+    print("Categoría actualizada." if cursor.rowcount else "ID no encontrado.")
+    cursor.close()
+
+def eliminar_categoria(conexion):
+    id_categoria = input("ID de la categoría a eliminar: ")
+    cursor = conexion.cursor()
+    cursor.execute("DELETE FROM categoria WHERE idcategoria = %s", (id_categoria,))
+    conexion.commit()
+    print("Categoría eliminada." if cursor.rowcount else "ID no encontrado.")
+    cursor.close()
+
+def main():
+    conexion = conectar_db()
+    while True:
+        print("Gestion de categorias")
+        print("1 Crear nueva categoria")
+        print("2 Leer categorias existentes")
+        print("3 Actualizar una categoria")
+        print("4 Eliminar una categoria")
+        print("5 Salir")
+        opcion = input("Opcion: ")
+        
+        if opcion == '1':
+            crear_categoria(conexion)
+        elif opcion == '2':
+            leer_categorias(conexion)
+        elif opcion == '3':
+            actualizar_categoria(conexion)
+        elif opcion == '4':
+            eliminar_categoria(conexion)
+        elif opcion == '5':
+            print("Hasta luego")
+            break
+        else:
+            print("Opcion no valida")
+
+    conexion.close()
+
+if __name__ == "__main__":
+    main()
