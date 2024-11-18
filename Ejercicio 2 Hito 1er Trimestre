@@ -1,0 +1,100 @@
+#Ejercicio 2 Hito Programación
+clientes = [None] * 100  #Indicamos una variable llamada clientes
+productos = [ #Hacemos una tabla con el id y el precio de cada producto
+    {"id": 1, "descripcion": "Producto A", "precio": 10.0},
+    {"id": 2, "descripcion": "Producto B", "precio": 15.0},
+    {"id": 3, "descripcion": "Producto C", "precio": 20.0},
+]
+
+# Variable para llevar el número de clientes registrados
+contador_clientes = 0
+
+def registrar_cliente():
+    global contador_clientes  # Usamos la variable para contar clientes
+    if contador_clientes >= len(clientes):
+        print("No se pueden registrar más clientes. Límite alcanzado.")
+        return
+
+    nombre = input("Ingrese el nombre del cliente: ")
+    apellido = input("Ingrese el apellido del cliente: ")
+    correo = input("Ingrese el correo electrónico del cliente: ")
+    telefono = input("Ingrese el teléfono del cliente: ")
+    direccion = input("Ingrese la dirección del cliente: ")
+
+    if all([nombre, apellido, correo, telefono, direccion]):
+        cliente = {
+            "nombre": nombre,
+            "apellido": apellido,
+            "correo": correo,
+            "telefono": telefono,
+            "direccion": direccion
+        }
+        clientes[contador_clientes] = cliente  # Guardamos los datos del cliente como contador
+        contador_clientes += 1  # Incrementamos el contador
+        print("Registro exitoso.")
+    else:
+        print("Todos los campos son obligatorios.")
+
+def mostrar_productos():
+    print("Productos disponibles:")
+    for producto in productos:
+        print(f"ID: {producto['id']}, Descripción: {producto['descripcion']}, Precio: {producto['precio']}")
+
+def realizar_compra():
+    if contador_clientes == 0:
+        print("No hay clientes registrados. Registre un cliente primero.")
+        return
+
+    # Seleccionar el cliente deseado
+    print("Seleccione el cliente (ingrese el índice):")
+    for i in range(contador_clientes):
+        cliente = clientes[i]
+        print(f"{i}: {cliente['nombre']} {cliente['apellido']}")
+    
+    cliente_index = int(input("Ingrese el índice del cliente: "))
+    if cliente_index < 0 or cliente_index >= contador_clientes:
+        print("Índice de cliente no válido.")
+        return
+
+    mostrar_productos()
+
+    # Seleccionar el producto
+    producto_id = int(input("Seleccione el producto (ingrese ID): "))
+    producto_seleccionado = next((p for p in productos if p["id"] == producto_id), None)
+
+    if not producto_seleccionado:
+        print("Producto no encontrado.")
+        return
+
+    cantidad = int(input("Ingrese la cantidad: ")) #Aquí se selecciona la cantidad del producto deseado quieres coger
+    total = producto_seleccionado["precio"] * cantidad
+
+    print(f"Total de la compra: {total}")
+    respuesta = input("¿Desea confirmar la compra? (Sí/No): ")
+
+    if respuesta == "Sí":
+        print("Compra realizada con éxito.")
+        print(f"Recibo: {clientes[cliente_index]['nombre']} {clientes[cliente_index]['apellido']} compró {cantidad} de {producto_seleccionado['descripcion']} por un total de {total}.")
+    else:
+        print("Compra cancelada.")
+
+def menu():
+    while True:
+        print("\nMenú:")
+        print("1. Registrar nuevo cliente")
+        print("2. Realizar compra")
+        print("3. Salir")
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "1":
+            registrar_cliente()
+        elif opcion == "2":
+            realizar_compra()
+        elif opcion == "3":
+            print("Saliendo de la aplicación.")
+            break
+        else:
+            print("Opción no válida. Intente de nuevo.")
+
+# Ejecutar el menú
+menu()
