@@ -1,0 +1,183 @@
+//de_config
+
+<?php
+class Conexion {
+    private $servidor = 'localhost';
+    private $usuario = 'root';
+    private $password = 'CURSO';
+    private $base_datos = 'usuarios';
+    public $conexion;
+
+    public function __construct() {
+        $this->conexion = new mysqli($this->servidor, $this->usuario, $this->password, $this->base_datos);
+
+        if ($this->conexion->connect_error) {
+            die("Error de conexión: " . $this->conexion->connect_error);
+        }
+    }
+
+    public function cerrar() {
+        $this->conexion->close();
+    }
+}
+?>
+
+//Usuarioscontroller.php
+
+<?php
+require_once '../modelo/class_usuario.php';
+
+class Usuarioscontroller {
+    private $modelo;
+
+    public function __construct() {
+        $this->modelo = new Usuario();
+    }
+
+    public function agregarUsuario($nombre, $apellido1, $apellido2, $email, $edad) {
+        $this->modelo->agregarUsuario($nombre, $apellido1, $apellido2, $email, $edad);
+    }
+
+    public function listarUsuario() {
+        return $this->modelo->obtenerUsuario();
+    }
+
+    public function obtenerUsuarioPorId($id_usuario) {
+        return $this->modelo->obtenerUsuarioPorId($id_usuario);
+    }
+
+    public function actualizarUsuario($id_usuario, $nombre, $apellido1, $apellido2, $email, $edad) {
+        $this->modelo->actualizarUsuario($id_usuario, $nombre, $apellido1, $apellido2, $email, $edad);
+    }
+
+    public function eliminarUsuario($id_usuario) {
+        $this->modelo->eliminarUsuario($id_usuario);
+    }
+}
+?>
+
+//apartado vista
+
+//alta_usuario.php
+
+<?php
+require_once '../controlador/Usuarioscontroller.php';
+$controller = new Usuarioscontroller();
+$socios = $controller->listarUsuario();
+?>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Agregar Socio</h5>
+    </div>
+    <div class="card-body">
+        <form action="../controlador/SociosController.php?action=guardar" method="POST">
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="apellido1">Apellido1</label>
+                <input type="text" class="form-control" id="apellido1" name="apellido1" required>
+            </div>
+            <div class="form-group">
+                <label for="apellido2">Apellido2</label>
+                <input type="text" class="form-control" id="apellido2" name="apellido2" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="edad">Edad</label>
+                <input type="text" class="form-control" id="edad" name="edad" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Agregar Usuario</button>
+            <a href="index.php?action=lista" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+//lista_usuarios.php
+
+<?php
+require_once '../controlador/Usuarioscontroller.php';
+$controller = new Usuarioscontroller();
+$socios = $controller->listarUsuario();
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Usuarios</title>
+</head>
+<body>
+    <h1>Usuarios Registrados</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido1</th>
+            <th>Apellido2</th>
+            <th>Email</th>
+            <th>Edad</th>
+            <th>Acciones</th>
+        </tr>
+        <?php foreach ($usuarios as $usuario): ?>
+            <tr>
+                <td><?= $usuario['id_socio'] ?></td>
+                <td><?= $usuario['nombre'] ?></td>
+                <td><?= $usuario['apellido1'] ?></td>
+                <td><?= $usuario['apellido2'] ?></td>
+                <td><?= $usuario['email'] ?></td>
+                <td><?= $usuario['edad'] ?></td>
+                <td>
+                    <a href="editar_usuario.php?id=<?= $usuario['id_socio'] ?>">Editar</a>
+                    <a href="eliminar_usuario.php?id=<?= $usuario['id_socio'] ?>">Eliminar</a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+    <br>
+    <a href="alta_usuario.php">Agregar un nuevo usuario</a>
+</body>
+</html>
+
+//index.php
+
+<?php
+header("Location: vista/lista_usuarios.php");
+exit();
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1º Hito 2T - Usuarios</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Gestión de Usuarios</h1>
+    
+        <?php
+        if (isset($_GET['action'])) {
+            $action = $_GET['action'];
+            if ($action == 'alta') {
+                include 'vista/alta_Usuarios.php';
+            } elseif ($action == 'lista') {
+                include 'vista/lista_Usuarios.php';
+            }
+        } else {
+            include 'vista/lista_Usuarios.php';
+        }
+        ?>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
