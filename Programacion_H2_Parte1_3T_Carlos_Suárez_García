@@ -1,0 +1,72 @@
+import java.sql.*; // Importamos las clases necesarias para trabajar con SQL
+import java.util.Scanner; // Importamos Scanner para leer la entrada del usuario
+
+public class CineApp {
+    // Definimos la URL de conexión a la base de datos y las credenciales
+    static final String url = "jdbc:mysql://localhost:3307/cine_carlossuarez";
+    static final String usuario = "root";
+    static final String contraseña = "";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in); // Creamos un objeto Scanner para leer la entrada
+        int opcion;
+
+        do {
+            // Mostramos el menú de opciones
+            System.out.println("\n--- Menú Cine ---");
+            System.out.println("1 - Ver películas");
+            System.out.println("2 - Salir");
+            System.out.print("Seleccione una opción: ");
+            opcion = scanner.nextInt(); // Leemos la opción seleccionada
+
+            switch (opcion) {
+                case 1:
+                    verPeliculas(); // Llamamos al método para ver películas
+                    break;
+                case 2:
+                    System.out.println("¡Gracias por usar la aplicación! Hasta luego."); // Mensaje de despedida
+                    break;
+                default:
+                    System.out.println("Opción no válida. Intente de nuevo."); // Mensaje de error
+            }
+        } while (opcion != 2); // Repetimos hasta que el usuario elija salir
+
+        scanner.close(); // Cerramos el scanner
+    }
+
+    private static void verPeliculas() {
+        // Consulta SQL para obtener los datos de las películas y sus funciones
+        String query = "SELECT p.titulo, p.director, p.año, p.genero, " +
+                       "f.fecha, f.hora, f.sala " +
+                       "FROM peliculas p " +
+                       "JOIN funciones f ON p.id_pelicula = f.id_pelicula";
+
+        try (Connection conexion = DriverManager.getConnection(url, usuario, contraseña); // Conectamos a la base de datos
+             Statement stmt = conexion.createStatement(); // Creamos un Statement para ejecutar la consulta
+             ResultSet rs = stmt.executeQuery(query)) { // Ejecutamos la consulta y obtenemos los resultados
+
+            // Mostramos los encabezados de la tabla
+            System.out.printf("%-30s %-20s %-5s %-15s %-10s %-8s %-5s%n", 
+                "Título", "Director", "Año", "Género", "Fecha", "Hora", "Sala");
+            System.out.println("--------------------------------------------------------------------------------------------------");
+
+            // Iteramos sobre los resultados y los mostramos
+            while (rs.next()) {
+                String titulo = rs.getString("titulo");
+                String director = rs.getString("director");
+                int año = rs.getInt("año");
+                String genero = rs.getString("genero");
+                java.sql.Date fecha = rs.getDate("fecha");
+                java.sql.Time hora = rs.getTime("hora");
+                int sala = rs.getInt("sala");
+
+                // Mostramos los datos de cada película
+                System.out.printf("%-30s %-20s %-5d %-15s %-10s %-8s %-5d%n", 
+                    titulo, director, año, genero, fecha, hora, sala);
+            }
+        } catch (SQLException e) {
+            // Manejo de errores en caso de problemas con la base de datos
+            System.out.println("Error al acceder a la base de datos: " + e.getMessage());
+        }
+    }
+}
